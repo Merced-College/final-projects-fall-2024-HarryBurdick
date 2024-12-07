@@ -134,7 +134,6 @@ public class Game {
 
     private void move(String direction) {
         if (currentLocation.getExits().containsKey(direction)) {
-            Location previousLocation = currentLocation;
             currentLocation = currentLocation.getExits().get(direction);
             System.out.println("You move " + direction + " to " + currentLocation.getName());
 
