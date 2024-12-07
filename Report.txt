@@ -1,0 +1,77 @@
+Program introduction:
+The game that i developed for this final titled "The Forgotten Keep" is a text based adventure game inspired by games like "Zork" and "Colossal Cave Adventure".
+The premise for this game is to engage players with exploration, solving puzzles, and uncovering a story as they play. While designing the game i kept in mind 
+adding features that would both be engaging and challenging, while balancing with a bit of immersion through imagination and environmental storytelling.
+
+While creating this game i set out to create a base program that would be easily expandable in order to be able to add as much content as i needed in an easy manner. 
+That in itself was challenging for me because i needed to come up with an easy workflow. A majority of my time was spent organizing and coming up with a way to create
+a program that i could expand on easily without needing to add much additional framework.
+
+Thankfully I was able to accomplish what I have here for this project. Although, its not perfect or in a completely finished state i'm proud with what i was able to create.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Algorithms:
+For this game I came up with a few Algorithms to fulfill this assignments requirements. 
+The first algorithm is for solving the riddle given to the player by the statue. This algorithm is used during the part of the game where the player has to solve a riddle
+in order to open the gate to the lost city. I came up with the idea through my many hours of playing puzzle-based games. I implemented a loop that allowed the player up to three
+free attempts to solve the riddle, while adding an additional risk factor by using health penalties. To solve this i broke the algorithm down into simple steps that i could map out.
+Checking if the player had free attempts remaining, deducting health when the free attempts where exhausted, and validating player input against the correct answer to the riddle.
+Additionally i wanted there to be feedback to the player that they answered it correctly and the effect it had in the environment.
+the flow goes:
+1. Check if the player has free attempts left
+2. If free attempts are exhasted, deduct health from the player.
+3. compare the players answer to the correct answer
+4. if the answer is correct, open the front gate to the forgotten city and remove the "solve riddle" command
+5. if the answer is incorrect, increment the attempts counter.
+The BigO time for this algorithm is small O(n) ('n' being the the length of the string provided by the player)
+
+The second algorithm is for player movement. For this i focused on making a reusable way for player movement to interact with the "map" system. I started out by mapping directions
+to their exits in the 'Location' class. Also i ensured that the player's input would check against available exits. I came up with this idea through my experiences playing other
+text based adventure games and taking inspiration from those. Also there was a bit of inspiration from grid based movement systems in similair games that i've played.
+I went about it by first implementing a movement handler that validated the player's command and then chacks to see if the exit exits for the players current location. If both
+of those checks pass then the player's current location is updated to the new location; otherwise it just gives feedback to the player letting them know that the movement failed.
+the flow goes:
+1. player inputs direction they want to go (north, west, east, south)
+2. Check if the current location has an exit in the specified direction.
+3. If an exit exists, move the player to the new location.
+4. Update the current location and display the new location's description.
+5. Check for any special conditions the location might have (e.g., closing the gate behind the player)
+The BigO time for this algorithm is O(n) ('n' because of string normalization)
+
+The third algorithm is for item usage. For this I focused on creating a system that would allow players to interact with their inventory and trigger item effects upon usage. 
+Initially my first attempts at this system were a bit too simple. They either didn't take into account that the item was actually in the player's inventory or they didnt properly
+differentiate between regular action and special actions tied to specific items. I came up with this idea by breaking down the logic into simple steps. First, i'd check if the item
+exists in the player's inventory, then if its used i'd check to see if the default action should be used or if the special action could be used depending on the players location.
+I also made sure that items from the players inventory were removed after being used (if required) to avoid confusion. Through this, i implemented a method that checks both the item
+type and if a special action for said item is defined, giving me flexibility for use cases.
+the flow goes:
+1. player uses item (rusted key, ancient coin, torch)
+2. search inventory for specified item
+3. if item is found, execute its special action or use default behavior
+4. remove item from inventory after use if necessary.
+The BigO time for this algorithm is O(m * n) ('n' average length of item names being compared, 'm' number of items in inventory)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Data Structures:
+For this game i ended up needing to use a few different data structures to properly be able to achieve what i set out to do.
+The first is LinkedHashMap for commands, I opted to use LinkedHashMap over regular HashMap because i wanted the order of the commands
+to coorespond to the order I had them in. The purpose for this is to display a clear and organized list of commands to the player.
+
+The second is ArrayList for inventory managment. I used this to store items the player picks up into and easy to access ArrayList. Additionally this allows me to add and remove
+items from the player freely either through the player using the item or through environmental reasons.
+
+The third is HashMap to store exits from each location in the game. This allows me to quickly provide the player with possible exits to a location if prompted. As well
+as add or remove exits to specified locations based on events.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Development process:
+During development I found myself having issues with managing certain edge cases. Especially when handing invalid user input or game states that were unexpected. More often
+than not this led to me getting lic errors or even crashes. For example, when the player entered an invalid command or tried to move in a direction that didnt exist,
+the game would either throw an expeption at me or do something unexpected. Additionally, managing state transitions between locations and making sure that items could be properly
+added, removed or interacted with while making sure their making sure their expected behavior worked was more challenging that expected. 
+
+Another issue that came up during development was that i found myself having issues with the inventory system. Especially when trying to handle edge cases such as trying 
+to use an item that didn't exist in the player's inventory or trying to interact with items after they were already removed. For instance, when the player tried to use an
+invalid item name or even an item that didn't have a valid special action, the program would crash out or do something unexpected. I fixed this by implementing the necessary null
+checks and inventory validation. I found that working through these problems taught me a lot about thoroughly testing edge cases and implementing more in depth error handling.
+
+In the next version for my game I would want to add a basic combat loop as that was something I was unable to get working on this version of the game. Additionally, along with
+the combat system, i would love to implement some sort of mid-game pseudo random combat ecounter system to allow for players to engage in combat. Other than that I want to fully
+flush out the story.
