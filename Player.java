@@ -21,6 +21,10 @@ public class Player {
     // Setter for health
     public void setHealth(int health) {
         this.health = Math.max(0, Math.min(100, health)); // Ensure health is between 0 and 100
+        if (this.health <= 0) {
+            System.out.println("You have died. Game over.");
+            System.exit(0);
+        }
         System.out.println("Your health is now " + this.health + ".");
     }
 
