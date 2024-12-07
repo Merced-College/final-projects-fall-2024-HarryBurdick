@@ -6,6 +6,7 @@ public class Game {
     private Location dungeonEntrance, darkHallway, lockedRoom, secretRoom, stairwell, tunnel, undergroundCityEntrance, tunnelAlongWall, tunnelAlongWallCavern, lostCity, intersection, stables, armory, castleKeep;
     private LinkedHashMap<String, Runnable> commands;
     private int riddleAttempts;
+    private boolean hasWon;
 
     public Game() {
         player = new Player();
@@ -14,6 +15,7 @@ public class Game {
         setupCommandsForLocation();
         currentLocation = dungeonEntrance;
         riddleAttempts = 0;
+        hasWon = false;
     }
 
     public void start() {
@@ -64,6 +66,11 @@ public class Game {
         // Add the solve riddle command if the player is in the tunnelAlongWallCavern
         if (currentLocation == tunnelAlongWallCavern) {
             commands.put("solve riddle", this::solveRiddle);
+        }
+
+        // Add the find treasure command if the player is in the castleKeep
+        if (currentLocation == castleKeep) {
+            commands.put("find treasure", this::findTreasure);
         }
     }
 
@@ -162,6 +169,18 @@ public class Game {
                 // Remove the exit leading back to the previous location
                 lostCity.getExits().remove("south");
             }
+
+            // Check if the player has entered the castle keep
+            if (currentLocation == castleKeep) {
+                System.out.println("You notice something shiny hidden in the corner.");
+                commands.put("find treasure", this::findTreasure);
+            }
+
+            // Check if the player has won the game
+            if (currentLocation == castleKeep && hasWon) {
+                System.out.println("Congratulations! You have found the hidden treasure and won the game!");
+                System.exit(0); // End the game
+            }
         } else {
             System.out.println("You cannot move in that direction.");
         }
@@ -221,6 +240,26 @@ public class Game {
         }
     }
 
+    private void findTreasure() {
+        if (currentLocation == castleKeep) {
+            System.out.println("You find a hidden treasure chest in the corner!");
+            System.out.println("Inside the chest, you find a shiny gem.");
+            player.addItem(new Item(
+                "Shiny Gem",
+                "A valuable gem that sparkles with brilliance.",
+                "This gem is worth a fortune.",
+                "special",
+                () -> {
+                    System.out.println("You admire the shiny gem. It's truly magnificent.");
+                    hasWon = true; // Set the win condition to true
+                }
+            ));
+            commands.remove("find treasure"); // Remove the command after using it
+        } else {
+            System.out.println("There is no treasure to find here.");
+        }
+    }
+
     private void initializeLocations() {
         dungeonEntrance = new Location("Dungeon Entrance", "You are at the entrance of a dark, crumbling dungeon. You see an unlit torch laying on the ground outside the dungeon entrance.");
         darkHallway = new Location("Dark Hallway", "A narrow hallway lit by flickering torches. To the north, you see a locked door.");
@@ -276,23 +315,14 @@ public class Game {
         intersection.addExit("west", stables);
         intersection.addExit("east", armory);
         intersection.addExit("north", castleKeep);
-        
-        //stables (Exits: east)
-        stables.addExit("east", intersection);
-        
-        //armory (Exits: west)
-        armory.addExit("west", intersection);
-        
-        //castlekeep (Exits: south)
-        castleKeep.addExit("intersection", currentLocation);
-        
 
         dungeonEntrance.addItem(new Item(
             "Torch",
             "A simple torch to light your way.",
             "It's a well-used torch with a charred tip.",
             "special",
-            () -> System.out.println("You light the torch. The flames dance and provide warmth.")));
+            () -> System.out.println("You light the torch. The flames dance and provide warmth.")
+        ));
 
         darkHallway.addItem(new Item(
             "Rusted Key",
@@ -324,6 +354,7 @@ public class Game {
             "An old coin with strange engravings.",
             "The coin depicts three arrows one facing up, one facing down, and the last facing down. Written along the bottom it says 'The truth lies within the keep.'",
             "special",
-            () -> System.out.println("The coin feels oddly warm to the touch, as if it was left here recently.")));
+            () -> System.out.println("The coin feels oddly warm to the touch, as if it was left here recently.")
+        ));
     }
 }
